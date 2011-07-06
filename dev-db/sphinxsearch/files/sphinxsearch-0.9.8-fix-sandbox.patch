@@ -1,0 +1,13 @@
+diff -Naur sphinx-0.9.8.org/Makefile.am sphinx-0.9.8/Makefile.am
+--- sphinx-0.9.8.org/Makefile.am	2008-10-05 12:11:25.000000000 +0200
++++ sphinx-0.9.8/Makefile.am	2008-10-05 12:12:27.000000000 +0200
+@@ -5,7 +5,7 @@
+ endif
+ 
+ EXTRA_DIST = api storage sphinx.conf.in sphinx-min.conf.in example.sql
+-sysconf_DATA = sphinx.conf.dist sphinx-min.conf.dist example.sql
++#sysconf_DATA = sphinx.conf.dist sphinx-min.conf.dist example.sql
+ 
+ install-data-hook:
+-	mkdir -p $(DESTDIR)$(localstatedir)/data && mkdir -p $(DESTDIR)$(localstatedir)/log
++#	mkdir -p $(DESTDIR)$(localstatedir)/data && mkdir -p $(DESTDIR)$(localstatedir)/log

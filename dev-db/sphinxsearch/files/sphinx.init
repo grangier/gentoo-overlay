@@ -1,0 +1,11 @@
+#!/sbin/runscript
+
+PID=`grep pid /etc/sphinxsearch/sphinx.conf | awk -F"= " '{print $2}'`
+
+start() {
+        searchd --config /etc/sphinxsearch/sphinx.conf
+}
+
+stop() {
+        kill -TERM `cat $PID`
+}
