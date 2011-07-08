@@ -229,6 +229,12 @@ src_configure() {
 		myconf="${myconf} --add-module=${WORKDIR}/${HTTP_SLOWFS_CACHE_MODULE_P}"
 	fi
 
+	if use nginx_modules_http_redis; then
+                http_enabled=1
+                myconf="${myconf} --add-module=${WORKDIR}/${HTTP_REDIS_MODULE_P}"
+        fi
+
+
 	if use http || use http-cache; then
 		http_enabled=1
 	fi
