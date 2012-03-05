@@ -280,11 +280,11 @@ src_configure() {
 		--with-cc-opt="-I${ROOT}usr/include" \
 		--with-ld-opt="-L${ROOT}usr/lib" \
 		--http-log-path=/var/log/${PN}/access_log \
-		--http-client-body-temp-path=/var/tmp/${PN}/client \
-		--http-proxy-temp-path=/var/tmp/${PN}/proxy \
-		--http-fastcgi-temp-path=/var/tmp/${PN}/fastcgi \
-		--http-scgi-temp-path=/var/tmp/${PN}/scgi \
-		--http-uwsgi-temp-path=/var/tmp/${PN}/uwsgi \
+		--http-client-body-temp-path=/home/nginx/tmp/${PN}/client \
+		--http-proxy-temp-path=/home/nginx/tmp/${PN}/proxy \
+		--http-fastcgi-temp-path=/home/nginx/tmp/${PN}/fastcgi \
+		--http-scgi-temp-path=/home/nginx/tmp/${PN}/scgi \
+		--http-uwsgi-temp-path=/home/nginx/tmp/${PN}/uwsgi \
 		${myconf} || die "configure failed"
 }
 
@@ -295,7 +295,7 @@ src_compile() {
 }
 
 src_install() {
-	keepdir /var/log/${PN} /var/tmp/${PN}/{client,proxy,fastcgi,scgi,uwsgi}
+	keepdir /var/log/${PN} /home/nginx/tmp/${PN}/{client,proxy,fastcgi,scgi,uwsgi}
 
 	dosbin objs/nginx
 	newinitd "${FILESDIR}"/nginx.init-r2 nginx
