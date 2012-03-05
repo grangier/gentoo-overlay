@@ -40,7 +40,7 @@ src_unpack() {
  
 src_compile() {
 	
- 
+ 	einfo "COMPILE"
         econf \
 		$(use_enable id64) \
                 $(use_with pgsql) \
