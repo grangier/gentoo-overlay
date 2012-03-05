@@ -13,13 +13,10 @@ SRC_URI="http://www.sphinxsearch.com/downloads/sphinx-0.9.9-rc2.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86"
-IUSE="mysql pgsql debug libstemmer python php id64"
+IUSE="pgsql debug libstemmer id64"
 EAPI="2"
  
-DEPEND="mysql? ( virtual/mysql )
-        pgsql? ( || ( dev-db/postgresql dev-db/postgresql-server ) )
-        python? ( >=dev-lang/python-2.4 )
-	php? ( >=dev-lang/php-5.2 )"
+DEPEND="pgsql? ( || ( dev-db/postgresql dev-db/postgresql-server ) )"
  
 RDEPEND="${DEPEND}"
 #CFLAGS="${CFLAGS} -D_FILE_OFFSET_BITS=64"
@@ -46,9 +43,9 @@ src_compile() {
  
         econf \
 		$(use_enable id64) \
-                $(use_with mysql) \
                 $(use_with pgsql) \
                 $(use_with libstemmer) \
+		--without-mysql \
                 $(use_with debug) || die "econf failed"
         echo econf
         emake || die "emake failed"
@@ -62,24 +59,6 @@ src_install() {
         insinto /etc/sphinxsearch/
         doins sphinx.conf.dist
         doinitd ${FILESDIR}/searchd
- 
-        # we install python api if python is used
-        if use python; then
-                distutils_python_version
-                site_pkgs="/usr/$(get_libdir)/python${PYVER}/site-packages"
-                cd ${S}
-                insinto ${site_pkgs}
-                doins api/sphinxapi.py
-                fperms 777 ${site_pkgs}/sphinxapi.py
-        fi
-
-	# we insall php api in /opt/sphinxsearch if used
-	if use php; then
-		dodir /opt/sphinxsearch
-		insinto /opt/sphinxsearch
-		doins api/sphinxapi.php
-		doins ${FILESDIR}/sphinx.php
-	fi
  
         einfo "------------------------------------------------------------------"
         einfo "sphinxsearch has been installed on your system"
