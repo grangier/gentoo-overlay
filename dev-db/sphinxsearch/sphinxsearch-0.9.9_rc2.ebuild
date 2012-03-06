@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
  
-inherit eutils autotools distutils
+inherit eutils autotools
  
 MY_P="${P/_rc/-rc}"
  
@@ -14,9 +14,9 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86"
 IUSE="pgsql debug libstemmer id64"
-EAPI="2"
+EAPI=4
  
-DEPEND="pgsql? ( || ( dev-db/postgresql dev-db/postgresql-server ) )"
+DEPEND="pgsql? ( dev-db/postgresql-server  )"
  
 RDEPEND="${DEPEND}"
 #CFLAGS="${CFLAGS} -D_FILE_OFFSET_BITS=64"
@@ -38,27 +38,33 @@ src_unpack() {
         eautoreconf
 }
  
-src_compile() {
-	
- 	einfo "COMPILE"
+src_configure() {
+	einfo "configure"
         econf \
-		$(use_enable id64) \
+                $(use_enable id64) \
                 $(use_with pgsql) \
                 $(use_with libstemmer) \
-		--without-mysql \
+                --without-mysql \
                 $(use_with debug) || die "econf failed"
-        echo econf
+        einfo "config"
+	echo econf
+}
+
+
+src_compile() {
         emake || die "emake failed"
 }
  
 src_install() {
         cd ${S}
         emake DESTDIR="${D}" install || die "install failed"
-	newinitd ${FILESDIR}/sphinx.init sphinx
+	#newinitd ${FILESDIR}/sphinx.init sphinx
         dodoc doc/* example.sql
         insinto /etc/sphinxsearch/
         doins sphinx.conf.dist
-        doinitd ${FILESDIR}/searchd
+        #doinitd ${FILESDIR}/searchd
+
+	newinitd "${FILESDIR}"/sphinx.init  searchd
  
         einfo "------------------------------------------------------------------"
         einfo "sphinxsearch has been installed on your system"
