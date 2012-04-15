@@ -1,0 +1,38 @@
+--- qmail-1.03/old-qmail-remote.c	Wed May  8 20:36:34 2002
++++ qmail-1.03/qmail-remote.c	Wed May  8 20:53:26 2002
+@@ -43,6 +43,9 @@
+ struct constmap maproutes;
+ stralloc host = {0};
+ stralloc sender = {0};
++stralloc outgoingip = {0};
++
++char oip[4];
+ 
+ saa reciplist = {0};
+ 
+@@ -316,6 +319,10 @@
+     temp_control();
+   if (control_rldef(&helohost,"control/helohost",1,(char *) 0) != 1)
+     temp_control();
++  if (control_readfile(&outgoingip,"control/outgoingip",0)>0) {
++    if (!ip_scan(outgoingip.s,&oip))
++      temp_control();
++  }
+   switch(control_readfile(&routes,"control/smtproutes",0)) {
+     case -1:
+       temp_control();
+@@ -414,6 +421,14 @@
+     smtpfd = socket(AF_INET,SOCK_STREAM,0);
+     if (smtpfd == -1) temp_oserr();
+  
++    if (oip[0] || oip[1] || oip[2] || oip[3]) {
++      struct sockaddr_in si;
++      si.sin_family=AF_INET;
++      si.sin_port=0;
++      byte_copy(&si.sin_addr,4,oip);
++      if (bind(smtpfd,(struct sockaddr*)&si,sizeof(si))) temp_oserr();
++    }
++
+     if (timeoutconn(smtpfd,&ip.ix[i].ip,(unsigned int) port,timeoutconnect) == 0) {
+       tcpto_err(&ip.ix[i].ip,0);
+       partner = ip.ix[i].ip;
